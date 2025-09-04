@@ -8,6 +8,7 @@ from restalchemy.dm import types
 from restalchemy.storage.sql import orm
 
 from gcl_sdk.audit import constants
+from gcl_iam import exceptions as iam_exceptions
 
 
 class AuditRecord(
@@ -69,7 +70,7 @@ class AuditLogSQLStorableMixin(orm.SQLStorableMixin):
         try:
             ctx = contexts.get_context()
             user_uuid = ctx.iam_context.token_info.user_uuid
-        except (contexts.ContextIsNotExistsInStorage, AttributeError):
+        except (contexts.ContextIsNotExistsInStorage, iam_exceptions.NoIamSessionStored, AttributeError):
             user_uuid = None
 
         AuditRecord(
